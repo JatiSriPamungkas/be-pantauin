@@ -1,4 +1,4 @@
-import { createsPresensi } from "../models/qr.js";
+import { createsPresensi } from "../models/attendances.js";
 
 export const createPresensi = async (req, res) => {
 	const { worker_id, check_in, status, notes } = req.body;

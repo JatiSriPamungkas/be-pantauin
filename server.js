@@ -3,7 +3,8 @@ import cors from "cors";
 import QRCode from "qrcode";
 import { router as TaskRouter } from "./src/routes/tasks.js";
 import { router as UserRouter } from "./src/routes/users.js";
-import { router as QrRouter } from "./src/routes/qr.js";
+import { router as WorkerRouter } from "./src/routes/workers.js";
+import { router as AttendaceRouter } from "./src/routes/attendances.js";
 import { getUsersByEmail } from "./src/models/users.js";
 
 let currentQRCode = null;
@@ -16,7 +17,8 @@ app.use(express.json());
 //routes
 app.use("/api/tasks", TaskRouter);
 app.use("/api/users", UserRouter);
-app.use("/api/qr", QrRouter);
+app.use("/api/workers", WorkerRouter);
+app.use("/api/attendances", AttendaceRouter);
 
 const generateQRCode = async () => {
 	const payload = {

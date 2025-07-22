@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createPresensi } from "../controllers/qr.js";
+import { createPresensi } from "../controllers/attendances.js";
 
 export const router = Router();
 
