@@ -100,5 +100,5 @@ app.use((req, res) => {
 });
 
 app.listen(3000, () => {
-	console.log(`Server is running on http://192.168.100.26:${PORT}`);
+	console.log(`Server is running on http://localhost:${PORT}`);
 });
