@@ -99,6 +99,6 @@ app.use((req, res) => {
 	res.send("<h1>Page not found!</h1>");
 });
 
-app.listen(3000, () => {
+app.listen(3000, "0.0.0.0", () => {
 	console.log(`Server is running on http://localhost:${PORT}`);
 });
