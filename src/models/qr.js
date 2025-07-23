@@ -9,7 +9,7 @@ export const getValidQRCodeToken = async () => {
         LIMIT 1;
     `;
 	const [rows] = await dbPool.execute(SQLQuery);
-	return rows.length ? rows[0].token : null;
+	return rows.length ? { token: rows[0].token, expired_at: rows[0].expired_at } : null;
 };
 
 export const createQRCodes = async (token, expiredAt) => {

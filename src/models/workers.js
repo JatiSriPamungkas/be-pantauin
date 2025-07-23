@@ -7,7 +7,7 @@ export const getTotalWorkers = async () => {
 };
 
 export const getAllWorkers = async () => {
-	const SQLQuery = `select u.id, u.name, w.phone_number, w.address  from users u join workers w on u.id = w.user_id;`;
+	const SQLQuery = `select u.id, u.name, w.phone_number, w.address from users u join workers w on u.id = w.user_id;`;
 
 	return await dbPool.execute(SQLQuery);
 };

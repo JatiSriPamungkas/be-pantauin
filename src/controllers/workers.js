@@ -42,9 +42,7 @@ export const getWorkerAndTask = async (req, res) => {
 
 		res.status(200).json({
 			message: "GET: successfully retrieved workers and tasks",
-			data: {
-				data,
-			},
+			data,
 		});
 	} catch (error) {
 		return res.status(500).json({

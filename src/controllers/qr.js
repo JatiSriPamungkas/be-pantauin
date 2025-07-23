@@ -2,12 +2,12 @@ import { createQRCodes, getValidQRCodeToken } from "../models/qr.js";
 
 export const getValidQRCode = async (req, res) => {
 	try {
-		const token = await getValidQRCodeToken();
+		const { token, expired_at } = await getValidQRCodeToken();
 		if (!token) {
 			return res.status(404).json({ error: "No valid QR code found" });
 		}
 
-		res.status(200).json({ token });
+		res.status(200).json({ token, expired_at });
 	} catch (error) {
 		res.status(500).json({
 			message: "Internal server error",

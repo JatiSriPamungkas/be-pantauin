@@ -39,6 +39,8 @@ const generateQRCode = async () => {
 			data: payload,
 			qrImageUrl,
 		};
+
+		console.log(payload);
 	} catch (error) {
 		console.error("Error generating QR code:", error);
 		return;
@@ -90,17 +92,19 @@ app.post("/login", async (req, res) => {
 app.get("/api/generate-qr", async (req, res) => {
 	if (!currentQRCode) return res.status(500).json({ error: "QR not ready" });
 
-	const qrAge = new Date() - new Date(currentQRCode.data.expired_at);
+	const expired_at = currentQRCode.data.expired_at;
+	const qrAge = new Date() - expired_at;
 
 	// Cek apakah QR masih valid (1 menit )
-	if (age > 60 * 1000) {
-		return res.status(410).json({ message: "QR expired. Please reload." });
-	}
+	// if (age > 60 * 1000) {
+	// 	return res.status(410).json({ message: "QR expired. Please reload." });
+	// }
 
 	return res.status(200).json({
 		message: "QR is valid",
 		data: currentQRCode.data,
 		qrImageUrl: currentQRCode.qrImageUrl,
+		qrAge,
 	});
 });
 
