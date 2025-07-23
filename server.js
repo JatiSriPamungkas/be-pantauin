@@ -1,11 +1,13 @@
 import express from "express";
 import cors from "cors";
 import QRCode from "qrcode";
+import { router as QrRouter } from "./src/routes/qr.js";
 import { router as TaskRouter } from "./src/routes/tasks.js";
 import { router as UserRouter } from "./src/routes/users.js";
 import { router as WorkerRouter } from "./src/routes/workers.js";
 import { router as AttendaceRouter } from "./src/routes/attendances.js";
 import { getUsersByEmail } from "./src/models/users.js";
+import { getValidQRCodeToken } from "./src/models/qr.js";
 
 let currentQRCode = null;
 const app = express();
@@ -15,34 +17,40 @@ app.use(cors());
 app.use(express.json());
 
 //routes
+app.use("/api/qr", QrRouter);
 app.use("/api/tasks", TaskRouter);
 app.use("/api/users", UserRouter);
 app.use("/api/workers", WorkerRouter);
 app.use("/api/attendances", AttendaceRouter);
 
 const generateQRCode = async () => {
-	const payload = {
-		sessionId: "123456",
-		timestamp: Date.now(),
-	};
+	const payload = await getValidQRCodeToken();
 
-	const qrString = JSON.stringify(payload);
-	const qrImageUrl = await QRCode.toDataURL(qrString);
+	if (!payload) {
+		console.error("No valid QR code token found");
+		return;
+	}
 
-	currentQRCode = {
-		data: payload,
-		qrImageUrl,
-		createdAt: Date.now(),
-	};
+	try {
+		const qrString = JSON.stringify(payload);
+		const qrImageUrl = await QRCode.toDataURL(qrString);
+
+		currentQRCode = {
+			data: payload,
+			qrImageUrl,
+		};
+	} catch (error) {
+		console.error("Error generating QR code:", error);
+		return;
+	}
 };
 
 // Generate first QR code on server start
 generateQRCode();
 
-// Update QR code every 30 seconds
 setInterval(() => {
 	generateQRCode();
-}, 30 * 1000); // 30 detik
+}, 60 * 1000); // 1 menit
 
 app.get("/", (req, res) => {
 	res.send("Welcome to Pantauin API!");
@@ -79,11 +87,10 @@ app.post("/login", async (req, res) => {
 	}
 });
 
-app.get("/api/qr", async (req, res) => {
+app.get("/api/generate-qr", async (req, res) => {
 	if (!currentQRCode) return res.status(500).json({ error: "QR not ready" });
 
-	const now = Date.now();
-	const age = now - currentQRCode.createdAt;
+	const qrAge = new Date() - new Date(currentQRCode.data.expired_at);
 
 	// Cek apakah QR masih valid (1 menit )
 	if (age > 60 * 1000) {

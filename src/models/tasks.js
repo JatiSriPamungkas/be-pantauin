@@ -5,3 +5,4 @@ export const getTasks = () => {
 
 	return dbPool.execute(SQLQuery);
 };
+

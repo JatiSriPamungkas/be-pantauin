@@ -1,4 +1,4 @@
-import { getUsers, getUsersById, getUsersByEmail } from "../models/users.js";
+import { getUsers, getUsersById, getUsersByEmail, getUsersByRole } from "../models/users.js";
 
 export const getUser = async (req, res) => {
 	try {
@@ -47,6 +47,24 @@ export const getUserByEmail = async (req, res) => {
 	} catch (error) {
 		res.status(500).json({
 			error: "GET: user by email failed",
+			messageErr: error,
+		});
+	}
+};
+
+export const getUserByRole = async (req, res) => {
+	const { role } = req.query;
+
+	try {
+		const [data] = await getUsersByRole(role);
+
+		res.status(200).json({
+			message: "GET: user by role successfully",
+			data: data,
+		});
+	} catch (error) {
+		res.status(500).json({
+			error: "GET: user by role failed",
 			messageErr: error,
 		});
 	}
